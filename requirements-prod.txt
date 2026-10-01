@@ -1,0 +1,6 @@
+# Extra dependencies needed ONLY for production (Render + Supabase).
+# Not needed for local development, which uses SQLite + local disk.
+# Install with: pip install -r requirements.txt -r requirements-prod.txt
+-r requirements.txt
+psycopg2-binary>=2.9.10
+supabase==2.7.4

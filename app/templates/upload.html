@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Upload — Vaultline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Upload a document</h1>
+    <p>Accepted types: PDF, DOCX, XLSX, PPTX, JPG, PNG, TXT. Maximum size 25&nbsp;MB.</p>
+  </div>
+</div>
+
+<div class="card card-pad" style="max-width: 520px;">
+  <form method="POST" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      <label for="file">Choose file</label>
+      {{ form.file(id="file") }}
+      {% for error in form.file.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      <div class="field-hint">Every upload is checked for type, size, and hashed for integrity before it's stored under a randomized internal name.</div>
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

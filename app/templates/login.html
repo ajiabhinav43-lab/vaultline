@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Vaultline{% endblock %}
+{% block auth_content %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-seal">SD</div>
+      <div class="brand-text">Vaultline<span>Secure Document Platform</span></div>
+    </div>
+    <h2>Sign in</h2>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:-8px;">Access your documents and shared files.</p>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">
+        <label for="email">Email</label>
+        {{ form.email(id="email", type="email", placeholder="you@example.com", autofocus=true) }}
+        {% for error in form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        {{ form.password(id="password", type="password", placeholder="••••••••") }}
+        {% for error in form.password.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field checkbox-row">
+        {{ form.remember() }} <label for="remember" style="margin:0; font-weight:400;">Remember me</label>
+      </div>
+      {{ form.submit(class="btn btn-primary btn-block") }}
+    </form>
+
+    <div class="auth-foot">
+      New here? <a href="{{ url_for('auth.register') }}">Create an account</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

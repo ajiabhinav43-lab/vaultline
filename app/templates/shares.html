@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Shares — Vaultline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    {% if document %}
+    <h1>Shares for "{{ document.original_filename }}"</h1>
+    <p>Everyone you've shared this document with, past and present.</p>
+    {% else %}
+    <h1>My shares</h1>
+    <p>Every document you've shared, across your whole library.</p>
+    {% endif %}
+  </div>
+  {% if document %}
+  <a href="{{ url_for('sharing.share_document', doc_id=document.id) }}" class="btn btn-primary">Share with someone new</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  {% if shares %}
+  <table class="ledger">
+    <thead>
+      <tr>
+        {% if not document %}<th>Document</th>{% endif %}
+        <th>Recipient</th><th>Permission</th><th>Status</th><th>Expires</th><th>Shared on</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for share in shares %}
+      <tr>
+        {% if not document %}<td class="file-name">{{ share.document.original_filename }}</td>{% endif %}
+        <td class="file-name">{{ share.shared_with.name }}<div class="file-meta">{{ share.shared_with.email }}</div></td>
+        <td><span class="badge badge-{{ share.permission|lower }}">{{ share.permission }}</span></td>
+        <td><span class="badge badge-{{ share.status_label()|lower }}">{{ share.status_label() }}</span></td>
+        <td class="file-meta">{{ share.expires_at.strftime('%d %b %Y') if share.expires_at else 'Never' }}</td>
+        <td class="file-meta">{{ share.created_at.strftime('%d %b %Y') }}</td>
+        <td style="text-align:right;">
+          {% if share.is_active() %}
+          <form method="POST" action="{{ url_for('sharing.revoke', share_id=share.id) }}" onsubmit="return confirm('Revoke access for {{ share.shared_with.email }}?');">
+            <button type="submit" class="btn btn-danger btn-sm">Revoke</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state"><h3>Not shared with anyone yet</h3></div>
+  {% endif %}
+</div>
+{% endblock %}

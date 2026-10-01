@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Vaultline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Your documents</h1>
+    <p>Everything you've uploaded, and what others have shared with you.</p>
+  </div>
+  <a href="{{ url_for('documents.upload') }}" class="btn btn-primary">Upload document</a>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="num">{{ stats.total_docs }}</div><div class="lbl">Documents stored</div></div>
+  <div class="stat"><div class="num">{{ stats.total_shares_out }}</div><div class="lbl">Active shares given</div></div>
+  <div class="stat"><div class="num">{{ stats.total_shares_in }}</div><div class="lbl">Shared with you</div></div>
+  <div class="stat"><div class="num">{{ (stats.storage_used / 1024 / 1024) | round(1) }} MB</div><div class="lbl">Storage used</div></div>
+</div>
+
+<div class="card" style="margin-bottom: 30px;">
+  {% if documents %}
+  <table class="ledger">
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th>Size</th>
+        <th>Uploaded</th>
+        <th>Integrity hash</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in documents %}
+      <tr>
+        <td>
+          <div class="file-name">{{ doc.original_filename }}</div>
+        </td>
+        <td class="file-meta">{{ doc.human_size() }}</td>
+        <td class="file-meta">{{ doc.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+        <td class="file-meta mono">{{ doc.file_hash[:12] }}…</td>
+        <td style="text-align:right; white-space:nowrap;">
+          <a href="{{ url_for('documents.view', doc_id=doc.id) }}" class="btn btn-secondary btn-sm">View</a>
+          <a href="{{ url_for('documents.download', doc_id=doc.id) }}" class="btn btn-secondary btn-sm">Download</a>
+          <a href="{{ url_for('sharing.share_document', doc_id=doc.id) }}" class="btn btn-secondary btn-sm">Share</a>
+          <a href="{{ url_for('sharing.manage_shares', doc_id=doc.id) }}" class="btn btn-secondary btn-sm">Shares</a>
+          <form method="POST" action="{{ url_for('documents.delete', doc_id=doc.id) }}" style="display:inline;" onsubmit="return confirm('Delete {{ doc.original_filename }}? This cannot be undone.');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <h3>No documents yet</h3>
+    <p>Upload your first file to start building your secure library.</p>
+    <a href="{{ url_for('documents.upload') }}" class="btn btn-primary">Upload document</a>
+  </div>
+  {% endif %}
+</div>
+
+<h2 style="margin-bottom: 14px;">Shared with you</h2>
+<div class="card">
+  {% if shared_with_me %}
+  <table class="ledger">
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th>Shared by</th>
+        <th>Permission</th>
+        <th>Expires</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for share in shared_with_me %}
+      <tr>
+        <td class="file-name">{{ share.document.original_filename }}</td>
+        <td class="file-meta">{{ share.sharer.name }}</td>
+        <td><span class="badge badge-{{ share.permission|lower }}">{{ share.permission }}</span></td>
+        <td class="file-meta">{{ share.expires_at.strftime('%d %b %Y') if share.expires_at else 'Never' }}</td>
+        <td style="text-align:right; white-space:nowrap;">
+          <a href="{{ url_for('documents.view', doc_id=share.document.id) }}" class="btn btn-secondary btn-sm">View</a>
+          {% if share.permission == 'DOWNLOAD' %}
+          <a href="{{ url_for('documents.download', doc_id=share.document.id) }}" class="btn btn-secondary btn-sm">Download</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <h3>Nothing shared with you yet</h3>
+    <p>Files other people share with your account will appear here.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

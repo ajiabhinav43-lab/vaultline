@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Audit logs — Vaultline Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Security activity</h1>
+    <p>The most recent 500 events across every account.</p>
+  </div>
+</div>
+
+<div class="card">
+  <table class="ledger">
+    <thead>
+      <tr><th>User</th><th>Action</th><th>Result</th><th>Details</th><th>IP</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td class="file-meta">{{ log.user.email if log.user else 'Anonymous' }}</td>
+        <td class="file-name">{{ log.action }}</td>
+        <td><span class="badge {% if log.result == 'SUCCESS' %}badge-active{% else %}badge-revoked{% endif %}">{{ log.result }}</span></td>
+        <td class="file-meta">{{ log.details or '—' }}</td>
+        <td class="file-meta mono">{{ log.ip_address or '—' }}</td>
+        <td class="file-meta">{{ log.timestamp.strftime('%d %b %Y, %H:%M:%S') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

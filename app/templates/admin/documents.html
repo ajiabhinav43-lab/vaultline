@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}All documents — Vaultline Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>All documents</h1>
+    <p>Metadata for every document stored on the platform. Contents are never shown here.</p>
+  </div>
+</div>
+
+<div class="card">
+  <table class="ledger">
+    <thead>
+      <tr><th>Document</th><th>Owner</th><th>Size</th><th>Hash</th><th>Uploaded</th></tr>
+    </thead>
+    <tbody>
+      {% for doc in documents %}
+      <tr>
+        <td class="file-name">{{ doc.original_filename }}</td>
+        <td class="file-meta">{{ doc.owner.email }}</td>
+        <td class="file-meta">{{ doc.human_size() }}</td>
+        <td class="file-meta mono">{{ doc.file_hash[:16] }}…</td>
+        <td class="file-meta">{{ doc.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

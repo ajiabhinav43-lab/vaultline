@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Users — Vaultline Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Users</h1>
+    <p>Every account registered on the platform.</p>
+  </div>
+</div>
+
+<div class="card">
+  <table class="ledger">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Last login</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="file-name">{{ u.name }}</td>
+        <td class="file-meta">{{ u.email }}</td>
+        <td>{% if u.is_admin %}<span class="badge badge-admin">Admin</span>{% else %}<span class="file-meta">User</span>{% endif %}</td>
+        <td>
+          {% if u.is_locked() %}<span class="badge badge-expired">Locked</span>
+          {% elif u.is_active_flag %}<span class="badge badge-active">Active</span>
+          {% else %}<span class="badge badge-revoked">Disabled</span>{% endif %}
+        </td>
+        <td class="file-meta">{{ u.created_at.strftime('%d %b %Y') }}</td>
+        <td class="file-meta">{{ u.last_login.strftime('%d %b %Y, %H:%M') if u.last_login else 'Never' }}</td>
+        <td style="text-align:right;">
+          {% if u.id != current_user.id %}
+          <form method="POST" action="{{ url_for('admin.toggle_user', user_id=u.id) }}">
+            <button type="submit" class="btn btn-secondary btn-sm">{{ 'Disable' if u.is_active_flag else 'Enable' }}</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

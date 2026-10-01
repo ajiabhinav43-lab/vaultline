@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+venv/
+env/
+instance/
+storage/user_*/
+storage/quarantine/*
+!storage/quarantine/.gitkeep
+.DS_Store
+*.log
+.pytest_cache/

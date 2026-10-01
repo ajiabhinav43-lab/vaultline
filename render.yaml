@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: vaultline
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt -r requirements-prod.txt && flask db upgrade"
+    startCommand: "gunicorn run:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false        # paste your Supabase connection string in the Render dashboard
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: vaultline-documents
+      - key: DEFAULT_ADMIN_EMAIL
+        sync: false
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: PYTHON_VERSION
+        value: 3.12.4

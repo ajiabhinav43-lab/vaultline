@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Share — Vaultline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Share document</h1>
+    <p>{{ document.original_filename }}</p>
+  </div>
+</div>
+
+<div class="card card-pad" style="max-width: 480px;">
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">
+      <label for="recipient_email">Recipient email</label>
+      {{ form.recipient_email(id="recipient_email", type="email", placeholder="colleague@example.com", autofocus=true) }}
+      {% for error in form.recipient_email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      <div class="field-hint">The recipient must already have a Vaultline account.</div>
+    </div>
+    <div class="field">
+      <label for="permission">Permission</label>
+      {{ form.permission(id="permission") }}
+    </div>
+    <div class="field">
+      <label for="expires_in">Link expires</label>
+      {{ form.expires_in(id="expires_in") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

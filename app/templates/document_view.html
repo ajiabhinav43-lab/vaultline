@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ document.original_filename }} — Vaultline{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ document.original_filename }}</h1>
+    <p>Uploaded {{ document.created_at.strftime('%d %b %Y, %H:%M') }} · {{ document.human_size() }}</p>
+  </div>
+  <div>
+    <a href="{{ url_for('documents.raw', doc_id=document.id) }}" target="_blank" class="btn btn-secondary">Open</a>
+    {% if can_download %}
+    <a href="{{ url_for('documents.download', doc_id=document.id) }}" class="btn btn-primary">Download</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card card-pad">
+    <p class="section-title">Document details</p>
+    <table class="ledger" style="border:none;">
+      <tbody>
+        <tr><td class="file-meta">Type</td><td>{{ document.mime_type }}</td></tr>
+        <tr><td class="file-meta">Size</td><td>{{ document.human_size() }}</td></tr>
+        <tr><td class="file-meta">SHA-256</td><td class="mono" style="word-break:break-all;">{{ document.file_hash }}</td></tr>
+        <tr><td class="file-meta">Storage backend</td><td>{{ document.storage_backend }}</td></tr>
+        <tr><td class="file-meta">Uploaded</td><td>{{ document.created_at.strftime('%d %b %Y, %H:%M') }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% if is_owner %}
+  <div class="card card-pad">
+    <p class="section-title">Sharing</p>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Share this document with another Vaultline user, or manage who already has access.</p>
+    <a href="{{ url_for('sharing.share_document', doc_id=document.id) }}" class="btn btn-primary btn-sm">Share document</a>
+    <a href="{{ url_for('sharing.manage_shares', doc_id=document.id) }}" class="btn btn-secondary btn-sm">Manage shares</a>
+  </div>
+  {% endif %}
+</div>
+
+<div style="margin-top: 24px;">
+  <a href="{{ url_for('dashboard.index') }}">&larr; Back to dashboard</a>
+</div>
+{% endblock %}

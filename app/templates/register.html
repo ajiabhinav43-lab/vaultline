@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Create account — Vaultline{% endblock %}
+{% block auth_content %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-seal">SD</div>
+      <div class="brand-text">Vaultline<span>Secure Document Platform</span></div>
+    </div>
+    <h2>Create your account</h2>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:-8px;">Start uploading and sharing documents securely.</p>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">
+        <label for="name">Full name</label>
+        {{ form.name(id="name", type="text", placeholder="Abhinav Kumar", autofocus=true) }}
+        {% for error in form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        {{ form.email(id="email", type="email", placeholder="you@example.com") }}
+        {% for error in form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        {{ form.password(id="password", type="password", placeholder="At least 8 characters") }}
+        {% for error in form.password.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="field">
+        <label for="confirm_password">Confirm password</label>
+        {{ form.confirm_password(id="confirm_password", type="password", placeholder="Repeat your password") }}
+        {% for error in form.confirm_password.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+      </div>
+      {{ form.submit(class="btn btn-primary btn-block") }}
+    </form>
+
+    <div class="auth-foot">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
